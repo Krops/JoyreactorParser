@@ -26,7 +26,7 @@ class Client(QWebEnginePage):
         self.app.quit()
 
 
-url = 'http://joyreactor.cc/tag/coub'
+url = 'http://joyreactor.cc/'
 with Display(visible=0, size=(800, 600)):
     rendered_html = Client(url).html
 soup = BeautifulSoup(rendered_html, 'html.parser')
@@ -37,21 +37,30 @@ for post in res_soup:
     link_id = link.get("href")
     result[link_id] = list()
     post_content = post.find("div", {"class": 'post_content'})
-    for content in post_content.findAll('div'):
-        content_data = ''
-        if content.get("class") is not None:
-            images = content.findAll(re.compile(r'(a|img|iframe)'))
-            attr_type = 'href'
-            for image in images:
-                if image.name == 'a':
-                    attr_type = 'href'
-                elif image.name == 'img':
-                    attr_type = 'src'
-                elif image.name == 'iframe':
-                    attr_type = 'src'
-                content_data = image.get(attr_type)
+    for i in post_content.findAll(text=True):
+        if i == "FixGifVideo()" or i == "ссылка на гифку":
+            i.replace_with("")
         else:
-            content_data = content.text
+            i.wrap(soup.new_tag('i'))
+    images = post_content.findAll(re.compile(r'(a|img|iframe|i)'))
+    for image in images:
+        content_data = ''
+        if image.name == 'a':
+            if image.get("class") is not None:
+                if 'prettyPhotoLink' not in image.get('class'):
+                    content_data = image.get('href')
+            else:
+                href = image.get('href')
+                if "diyGif" not in href:
+                    content_data = href
+        elif image.name == 'img':
+            if image.parent.name != 'video':
+                content_data = image.get('src')
+        elif image.name == 'iframe':
+            content_data = image.get('src')
+        elif image.name == 'i':
+            content_data = image.text
         if len(content_data) > 0:
-            result.get(link_id).append(content_data)
+            result[link_id].append(content_data)
+
 print(result)
