@@ -1,34 +1,37 @@
-from bs4 import BeautifulSoup
-import sys
-import re
-from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import QUrl
-from PyQt5.QtWebEngineWidgets import QWebEnginePage
-from pyvirtualdisplay import Display
 import collections
+import os
+import re
+
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options as ChromeOptions
+from webdriver_manager.chrome import ChromeDriverManager
+
+options = ChromeOptions()
 
 
-class Client(QWebEnginePage):
-    def __init__(self, url):
-        self.app = QApplication(sys.argv)
-        QWebEnginePage.__init__(self)
-        self.html = ''
-        self.loadFinished.connect(self._on_load_finished)
-        self.load(QUrl(url))
-        self.app.exec_()
-
-    def _on_load_finished(self):
-        self.html = self.toHtml(self.Callable)
-        print('Load finished')
-
-    def Callable(self, html_str):
-        self.html = html_str
-        self.app.quit()
+def chrome_options(chrome_options: ChromeOptions):
+    default_preferences = {"download.prompt_for_download": False,
+                           "download.default_directory": os.path.expanduser("~/Downloads"),
+                           "extensions.ui.developer_mode": True}
+    chrome_options.add_argument("headless")
+    chrome_options.add_argument('--verbose')
+    chrome_options.add_argument("--start-maximized")
+    chrome_options.add_argument('--enable-logging')
+    chrome_options.add_argument('--ignore-certificate-errors')
+    chrome_options.add_argument("--allow-running-insecure-content")
+    chrome_options.set_capability('loggingPrefs', {'browser': 'All'})
+    chrome_options.add_experimental_option("prefs", default_preferences)
+    return chrome_options
 
 
+driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=chrome_options(options))
 url = 'http://joyreactor.cc/'
-with Display(visible=0, size=(800, 600)):
-    rendered_html = Client(url).html
+driver.execute_cdp_cmd('Network.setBlockedURLs', {"urls": [
+    "http://counter.yadro.ru/hit;JoyReactor?t26.6;r;s1792*1120*30;uhttp%3A//joyreactor.cc/;0.5872430842418059"]})
+driver.execute_cdp_cmd('Network.enable', {})
+driver.get(url)
+rendered_html = driver.page_source
 soup = BeautifulSoup(rendered_html, 'html.parser')
 res_soup = soup.findAll("div", {"class": 'postContainer'})
 result = collections.OrderedDict()
