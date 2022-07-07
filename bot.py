@@ -29,14 +29,18 @@ for g in diff:
         elif 'mp4' in item:
             media = InputMediaVideo(media=item)
             item_list.append(media)
+        elif 'gif' in item:
+            media = InputMediaVideo(media=item)
+            item_list.append(media)
         else:
             text = text + " " + item
     if len(item_list) > 0:
         if len(text) > 1024:
-            bot.send_message('@joyreact_channel', text=text)
+            bot.send_message('@joyreact_channel', text=text, disable_web_page_preview=True)
             item_list[0].caption = url_text
         else:
-            item_list[0].caption = text + url_text
+            item_list[0].caption = text + '\n' + url_text
         bot.send_media_group('@joyreact_channel', item_list)
     else:
-        bot.send_message('@joyreact_channel', text=text)
+        text = text + '\n' + url_text
+        bot.send_message('@joyreact_channel', text=text, disable_web_page_preview=True)
