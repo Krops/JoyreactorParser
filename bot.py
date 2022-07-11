@@ -1,3 +1,4 @@
+import configparser
 import json
 
 import telebot
@@ -5,7 +6,12 @@ from telebot.types import InputMediaPhoto, InputMediaVideo
 
 from parser import get_m
 
-bot = telebot.TeleBot('424337465:AAF7zdf3_sLe6n6-tibF_iC7ChRYoxl14Sk')
+config = configparser.ConfigParser()
+config.read('config.ini')
+token = ''
+if 'token' in config:
+    token = config['token']
+bot = telebot.TeleBot(token)
 url = 'http://joyreactor.cc'
 result = get_m()
 print(result)
