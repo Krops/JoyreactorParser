@@ -1,5 +1,7 @@
 import configparser
 import json
+import time
+from datetime import datetime
 
 import telebot
 from apscheduler.schedulers.blocking import BlockingScheduler
@@ -57,12 +59,13 @@ def send_message(result, diff):
         else:
             text = text + '\n' + url_text
             bot.send_message('@joyreact_channel', text=text, disable_web_page_preview=True)
+        time.sleep(0.5)
 
 
 scheduler = BlockingScheduler()
 
 
-@scheduler.scheduled_job(IntervalTrigger(minutes=10))
+@scheduler.scheduled_job(IntervalTrigger(minutes=10), next_run_time=datetime.now())
 def some_job():
     result = get_m()
     send_message(result, check_sent_messages(result))
