@@ -1,0 +1,13 @@
+version: '1'
+
+services:
+
+  joyreactor:
+    container_name: ${COMPOSE_PROJECT_NAME}
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    network_mode: bridge
+    volumes:
+      - $PWD/:/joyreactor
+    working_dir: /joyreactor
