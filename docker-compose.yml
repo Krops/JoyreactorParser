@@ -1,9 +1,9 @@
-version: '1'
+version: '3'
 
 services:
 
   joyreactor:
-    container_name: ${COMPOSE_PROJECT_NAME}
+    container_name: joyreactor-parser
     build:
       context: .
       dockerfile: ./Dockerfile

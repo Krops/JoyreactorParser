@@ -13,8 +13,7 @@ options = ChromeOptions()
 def chrome_options(chrome_options: ChromeOptions):
     default_preferences = {"download.prompt_for_download": False,
                            "download.default_directory": os.path.expanduser("~/Downloads"),
-                           "extensions.ui.developer_mode": True}
-    chrome_options.add_argument("headless")
+                           "extensions.ui.developer_mode": False}
     chrome_options.add_argument('--verbose')
     chrome_options.add_argument("--start-maximized")
     chrome_options.add_argument('--enable-logging')
