@@ -36,7 +36,7 @@ def send_message(result, diff):
         url_text = f"{url}{g}"
         for item in result.get(g):
             if 'jpeg' in item:
-                media = InputMediaPhoto(media=item)
+                media = InputMediaPhoto(media=f'{1}'.format(item))
                 item_list.append(media)
             elif 'png' in item:
                 media = InputMediaPhoto(media=item)

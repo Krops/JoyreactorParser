@@ -26,7 +26,7 @@ def chrome_options(chrome_options: ChromeOptions):
 
 def get_page_soup():
     driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=chrome_options(options))
-    url = 'http://joyreactor.cc/'
+    url = 'https://joyreactor.cc/post/5276063'
     driver.execute_cdp_cmd('Network.setBlockedURLs', {"urls": [
         "http://counter.yadro.ru/hit;JoyReactor?t26.6;r;s1792*1120*30;uhttp%3A//joyreactor.cc/;0.5872430842418059"]})
     driver.execute_cdp_cmd('Network.enable', {})
